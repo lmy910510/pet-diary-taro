@@ -1,0 +1,77 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-02-24T04:45:00.508Z
+provider: 
+---
+
+# UI 视觉风格规范
+
+## 图标使用
+
+- **禁止使用 Emoji 作为 UI 图标**，Emoji 在不同平台渲染不一致，且风格难以统一
+- 需要图标时，**统一使用 Lucide 图标库**（已安装 `lucide-vue-next`）
+- 图标风格：**线形（outline/stroke）**，stroke-width 推荐 `1.5`
+- 图标大小根据上下文选择：小按钮/标签 `16px`，普通按钮 `20px`，大图标 `24px`+
+
+## 圆角风格
+
+- 使用 **大圆角、圆润风格**
+- 优先使用设计变量：`var(--radius)`、`var(--radius-lg)`、`var(--radius-full)`
+- 按钮、输入框、卡片等组件保持圆角一致性
+
+### 嵌套圆角规则
+
+- 当子元素（如按钮）嵌套在父容器（如卡片、输入框）内时，**子元素圆角 = 父容器圆角 - 子元素与父容器的间距**
+- 公式：`子圆角 = 父圆角 - padding/gap`
+- 示例：容器圆角 `20px`，内部 padding `8px`，则按钮圆角应为 `20 - 8 = 12px`
+- 如果按钮和容器的圆角是固定的，应调整间距来满足嵌套关系
+- 目的是让容器与内部元素的边缘弧线**平行、间距均匀**，避免"圆角里套直角"或"大圆角里套更大圆角"的视觉冲突
+
+```scss
+// 正确：嵌套圆角
+.card {
+  border-radius: 20px;
+  padding: 8px;
+
+  .card__button {
+    border-radius: 12px; // 20 - 8 = 12
+  }
+}
+
+// 错误：子元素圆角与容器不协调
+.card {
+  border-radius: 20px;
+  padding: 8px;
+
+  .card__button {
+    border-radius: 9999px; // 过大，与容器弧线不平行
+  }
+}
+```
+
+## 配色规范
+
+- 严格遵循已引入的设计规范和组件库变量
+- 主色：`var(--primary)`、`var(--primary-foreground)`
+- 前景/背景：`var(--foreground)`、`var(--background)`、`var(--muted)`
+- 边框：`var(--border)`、`var(--ring)`
+- 禁止硬编码颜色值，除非是特殊场景（如渐变、警告色等）
+
+## 示例
+
+```vue
+<!-- 正确：使用 Lucide 图标 -->
+<script setup>
+import { Scale, AlertCircle } from 'lucide-vue-next'
+</script>
+<template>
+  <Scale :size="16" :stroke-width="1.5" />
+</template>
+
+<!-- 错误：使用 Emoji -->
+<template>
+  <span>⚖️</span>
+</template>
+```
