@@ -1,0 +1,47 @@
+{
+  "name": "pet-diary-taro",
+  "version": "1.0.0",
+  "private": true,
+  "description": "毛坨日记小程序",
+  "templateInfo": {
+    "name": "vue3-ts",
+    "typescript": true,
+    "css": "sass"
+  },
+  "scripts": {
+    "build:weapp": "taro build --type weapp",
+    "dev:weapp": "npm run build:weapp -- --watch",
+    "build:h5": "taro build --type h5",
+    "dev:h5": "npm run build:h5 -- --watch"
+  },
+  "browserslist": [
+    "last 3 versions",
+    "Android >= 4.1",
+    "ios >= 8"
+  ],
+  "dependencies": {
+    "@babel/runtime": "^7.24.0",
+    "@tarojs/components": "4.1.11",
+    "@tarojs/helper": "4.1.11",
+    "@tarojs/plugin-framework-vue3": "4.1.11",
+    "@tarojs/plugin-platform-h5": "4.1.11",
+    "@tarojs/plugin-platform-weapp": "4.1.11",
+    "@tarojs/runtime": "4.1.11",
+    "@tarojs/shared": "4.1.11",
+    "@tarojs/taro": "4.1.11",
+    "@tarojs/taro-h5": "4.1.11",
+    "vue": "^3.4.21"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "@tarojs/cli": "4.1.11",
+    "@tarojs/webpack5-runner": "4.1.11",
+    "@types/node": "^18.19.0",
+    "@vue/babel-plugin-jsx": "^1.5.0",
+    "@vue/compiler-sfc": "^3.4.21",
+    "babel-preset-taro": "^4.1.11",
+    "sass": "^1.77.0",
+    "typescript": "^5.4.5",
+    "webpack": "5.91.0"
+  }
+}

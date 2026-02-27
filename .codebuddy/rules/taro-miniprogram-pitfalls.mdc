@@ -1,0 +1,82 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-02-25T13:58:07.271Z
+provider: 
+---
+
+# Taro Vue3 小程序开发陷阱
+
+## 布尔属性必须使用动态绑定（CRITICAL）
+
+Taro Vue3 编译到小程序时，**静态布尔属性不会被正确传递**，默认值为 `false`。
+
+必须使用 Vue 的 `:attr="true"` 动态绑定语法，而不是 HTML 风格的静态属性。
+
+```vue
+<!-- 错误：静态属性，编译后 scroll-y 为 false，不能滚动 -->
+<scroll-view scroll-y>
+
+<!-- 正确：动态绑定，编译后 scroll-y 为 true -->
+<scroll-view :scroll-y="true">
+```
+
+**原理**：Taro 的模板递归引擎 `base.wxml` 中，布尔属性默认值为 `false`：
+
+```wxml
+scroll-y="{{xs.b(i.p35, !1)}}"  // !1 = false
+```
+
+只有通过 `:scroll-y="true"` 动态绑定，Taro 才会将值正确传递为 `true`。
+
+### 适用范围
+
+所有小程序组件的布尔属性都应使用动态绑定，包括但不限于：
+
+- `<scroll-view :scroll-y="true">` / `<scroll-view :scroll-x="true">`
+- `<scroll-view :enhanced="true">`
+- `<scroll-view :show-scrollbar="true">`
+- `<swiper :circular="true">`
+- `<input :focus="true">`
+- `<textarea :auto-height="true">`
+
+### 排查方法
+
+当小程序组件行为不符合预期时，**第一步检查编译产物**（`dist/weapp/`），确认属性值是否正确传递，而不是先猜 CSS 或事件问题。
+
+## 弹层防穿透（CRITICAL）
+
+当弹层打开时，必须同时做两层防护，避免“蒙层下页面还能滑动”：
+
+1. **独立背景层拦截手势**（背景层使用 `catchMove`，不要放到整个弹层容器上）
+2. **页面根节点加锁**（`position: fixed + height: 100vh + overflow: hidden`）
+
+```vue
+<!-- 推荐结构 -->
+<view class="sheet-mask">
+  <view class="sheet-mask__bg" catchMove @tap="handleClose" />
+  <view class="sheet">...</view>
+</view>
+```
+
+```scss
+.page--locked {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+```
+
+### 注意
+
+- 不要把 `catchMove` 直接加在需要滚动的容器上，否则会导致 `scroll-view` 无法滚动。
+- 背景遮罩层和弹层内容层要分层（内容层 `z-index` 高于背景层）。
+
+## scroll-view 其他注意事项
+
+1. **不支持 padding**：`padding` 放在内部子容器 `<view>` 上
+2. **需要明确高度**：使用 `style="height: XXvh"` 或 `calc()` 设置高度

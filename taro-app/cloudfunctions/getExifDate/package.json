@@ -1,0 +1,9 @@
+{
+  "name": "getExifDate",
+  "version": "1.0.0",
+  "description": "从云存储图片中提取 EXIF 拍摄日期",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
